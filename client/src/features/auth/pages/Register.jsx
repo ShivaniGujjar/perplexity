@@ -11,24 +11,20 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Handle input changes for two-way binding
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
-    // Clear error when user starts typing
     if (error) setError('');
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    // Basic validation
     if (!formData.username || !formData.email || !formData.password) {
       setError('Please fill in all fields');
       setLoading(false);
@@ -70,8 +66,6 @@ const Register = () => {
         return;
       }
 
-      // Store token and redirect
-      // localStorage.setItem('token', data.token);
       navigate('/');
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -82,37 +76,34 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 flex items-center justify-center p-4">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
-      </div>
+    <div className="min-h-screen bg-[#0B0E14] flex items-center justify-center p-4">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;1,600&family=Inter:wght@400;500;600&display=swap');
+        .unravel-display { font-family: 'Fraunces', Georgia, serif; }
+        .unravel-body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+        .unravel-mono { font-family: ui-monospace, 'IBM Plex Mono', Menlo, Consolas, monospace; }
+        .unravel-input:focus { border-color: #E8A33D; }
+      `}</style>
 
-      {/* Form Container */}
       <div className="relative w-full max-w-md">
-        <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-800/50 rounded-2xl shadow-2xl p-8 md:p-10">
-          {/* Header */}
+        <div className="bg-[#0F1219] border border-white/10 p-8 md:p-10">
           <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-              Create Account
+            <h1 className="unravel-display italic text-3xl md:text-4xl font-medium text-[#EDEAE2] mb-2">
+              Create account
             </h1>
-            <p className="text-slate-400 text-sm">Join us and start exploring</p>
+            <p className="unravel-body text-[#8B8F98] text-sm">Join us and start exploring</p>
           </div>
 
-          {/* Error Message */}
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
-              <p className="text-red-400 text-sm font-medium">{error}</p>
+            <div className="mb-6 p-3.5 bg-[#E8352B]/10 border border-[#E8352B]/30">
+              <p className="unravel-body text-[#F0897F] text-sm font-medium">{error}</p>
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Username Field */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-slate-300 mb-2">
-                Username
+              <label htmlFor="username" className="unravel-mono block text-[11px] text-[#8B8F98] tracking-[0.1em] mb-2">
+                USERNAME
               </label>
               <input
                 type="text"
@@ -121,14 +112,13 @@ const Register = () => {
                 value={formData.username}
                 onChange={handleChange}
                 placeholder="john_doe"
-                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200"
+                className="unravel-input unravel-body w-full px-4 py-3.5 bg-[#0B0E14] border border-white/10 text-[#EDEAE2] placeholder-[#5B5F68] focus:outline-none transition-colors"
               />
             </div>
 
-            {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-slate-300 mb-2">
-                Email Address
+              <label htmlFor="email" className="unravel-mono block text-[11px] text-[#8B8F98] tracking-[0.1em] mb-2">
+                EMAIL ADDRESS
               </label>
               <input
                 type="email"
@@ -137,14 +127,13 @@ const Register = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="name@example.com"
-                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200"
+                className="unravel-input unravel-body w-full px-4 py-3.5 bg-[#0B0E14] border border-white/10 text-[#EDEAE2] placeholder-[#5B5F68] focus:outline-none transition-colors"
               />
             </div>
 
-            {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-2">
-                Password
+              <label htmlFor="password" className="unravel-mono block text-[11px] text-[#8B8F98] tracking-[0.1em] mb-2">
+                PASSWORD
               </label>
               <input
                 type="password"
@@ -153,37 +142,33 @@ const Register = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
-                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-2 focus:ring-cyan-500/20 transition-all duration-200"
+                className="unravel-input unravel-body w-full px-4 py-3.5 bg-[#0B0E14] border border-white/10 text-[#EDEAE2] placeholder-[#5B5F68] focus:outline-none transition-colors"
               />
             </div>
 
-            {/* Password Requirements */}
-            <div className="text-xs text-slate-400 space-y-1">
-              <p>• Password must be at least 6 characters long</p>
-              <p>• Username must be at least 3 characters long</p>
+            <div className="unravel-body text-xs text-[#8B8F98] space-y-1">
+              <p>· Password must be at least 6 characters long</p>
+              <p>· Username must be at least 3 characters long</p>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:from-slate-600 disabled:to-slate-600 text-white font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-cyan-500/20 disabled:cursor-not-allowed"
+              className="unravel-body w-full py-3.5 px-4 bg-[#E8A33D] hover:bg-[#F2AE4A] disabled:bg-[#2A2D35] disabled:text-[#5B5F68] text-[#0B0E14] font-semibold transition-colors disabled:cursor-not-allowed"
             >
-              {loading ? 'Creating Account...' : 'Create Account'}
+              {loading ? 'Creating account…' : 'Create account'}
             </button>
           </form>
 
-          {/* Divider */}
-          <div className="my-6 flex items-center">
-            <div className="flex-1 border-t border-slate-700/50"></div>
-            <span className="px-4 text-xs text-slate-500">OR</span>
-            <div className="flex-1 border-t border-slate-700/50"></div>
+          <div className="my-6 flex items-center gap-4">
+            <div className="flex-1 border-t border-white/10" />
+            <span className="unravel-mono text-[10px] text-[#5B5F68] tracking-[0.1em]">OR</span>
+            <div className="flex-1 border-t border-white/10" />
           </div>
 
-          {/* Login Link */}
-          <p className="text-center text-slate-400 text-sm">
+          <p className="unravel-body text-center text-[#8B8F98] text-sm">
             Already have an account?{' '}
-            <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+            <Link to="/login" className="text-[#E8A33D] hover:text-[#F2AE4A] font-medium transition-colors">
               Sign in
             </Link>
           </p>

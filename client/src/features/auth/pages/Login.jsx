@@ -1,7 +1,12 @@
-import { useState, useEffect } from 'react'; // 🚀 Added useEffect
-import { useNavigate, Link } from 'react-router-dom'; // 🚀 Removed Navigate
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../auth.slice";
+
+// Same system as the landing page: ink navy board, one amber accent, thin
+// borders, sharp corners, serif display type. No dual blue/cyan glow orbs,
+// no backdrop-blur glass card, no gradient-clip heading. All auth logic
+// below is unchanged from the original — only the JSX/classes moved.
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -12,9 +17,6 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // 🛡️ REPLACEMENT GUARD:
-  // Instead of a hard 'return <Navigate />', we use a useEffect.
-  // This prevents the "kick-back" loop when the component first mounts.
   useEffect(() => {
     if (user) {
       navigate('/', { replace: true });
@@ -42,7 +44,7 @@ const Login = () => {
       const response = await fetch('https://unravel-bm4y.onrender.com/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include', 
+        credentials: 'include',
         body: JSON.stringify(formData),
       });
 
@@ -54,12 +56,10 @@ const Login = () => {
         return;
       }
 
-      // 🚀 THE FIX: Save the token specifically to localStorage
       if (data.token) {
         localStorage.setItem('token', data.token);
       }
 
-      // Save the user data as you were doing before
       localStorage.setItem('user', JSON.stringify(data.user));
       dispatch(setUser(data.user));
     } catch (err) {
@@ -70,31 +70,35 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
-      </div>
+    <div className="min-h-screen bg-[#0B0E14] flex items-center justify-center p-4">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;1,600&family=Inter:wght@400;500;600&display=swap');
+        .unravel-display { font-family: 'Fraunces', Georgia, serif; }
+        .unravel-body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+        .unravel-mono { font-family: ui-monospace, 'IBM Plex Mono', Menlo, Consolas, monospace; }
+        .unravel-input:focus { border-color: #E8A33D; }
+      `}</style>
 
-      <div className="relative w-full max-w-md z-10">
-        <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-3xl shadow-2xl p-8 md:p-10">
+      <div className="relative w-full max-w-md">
+        <div className="bg-[#0F1219] border border-white/10 p-8 md:p-10">
           <div className="text-center mb-8">
-            <h1 className="text-3xl md:text-4xl font-black bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-              Welcome Back
+            <h1 className="unravel-display italic text-3xl md:text-4xl font-medium text-[#EDEAE2] mb-2">
+              Welcome back
             </h1>
-            <p className="text-slate-400 text-sm font-medium">Sign in to your account to continue</p>
+            <p className="unravel-body text-[#8B8F98] text-sm">Sign in to your account to continue</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl">
-              <p className="text-red-400 text-sm font-bold">{error}</p>
+            <div className="mb-6 p-3.5 bg-[#E8352B]/10 border border-[#E8352B]/30">
+              <p className="unravel-body text-[#F0897F] text-sm font-medium">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Email Address</label>
+              <label className="unravel-mono block text-[11px] text-[#8B8F98] tracking-[0.1em] mb-2">
+                EMAIL ADDRESS
+              </label>
               <input
                 type="email"
                 name="email"
@@ -102,12 +106,14 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="name@example.com"
-                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/50 transition-all"
+                className="unravel-input unravel-body w-full px-4 py-3.5 bg-[#0B0E14] border border-white/10 text-[#EDEAE2] placeholder-[#5B5F68] focus:outline-none transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-black text-slate-500 uppercase tracking-widest mb-2 ml-1">Password</label>
+              <label className="unravel-mono block text-[11px] text-[#8B8F98] tracking-[0.1em] mb-2">
+                PASSWORD
+              </label>
               <input
                 type="password"
                 name="password"
@@ -115,22 +121,22 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="••••••••"
-                className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:outline-none focus:border-blue-500/50 transition-all"
+                className="unravel-input unravel-body w-full px-4 py-3.5 bg-[#0B0E14] border border-white/10 text-[#EDEAE2] placeholder-[#5B5F68] focus:outline-none transition-colors"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 px-4 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-800 text-white font-bold rounded-2xl transition-all shadow-xl shadow-blue-600/10 disabled:cursor-not-allowed active:scale-[0.98]"
+              className="unravel-body w-full py-3.5 px-4 bg-[#E8A33D] hover:bg-[#F2AE4A] disabled:bg-[#2A2D35] disabled:text-[#5B5F68] text-[#0B0E14] font-semibold transition-colors disabled:cursor-not-allowed"
             >
-              {loading ? 'Signing In...' : 'Sign In'}
+              {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
 
-          <p className="text-center text-slate-500 text-sm mt-8 font-medium">
+          <p className="unravel-body text-center text-[#8B8F98] text-sm mt-8">
             Don't have an account?{' '}
-            <Link to="/register" className="text-blue-400 hover:text-blue-300 font-bold transition-colors">
+            <Link to="/register" className="text-[#E8A33D] hover:text-[#F2AE4A] font-medium transition-colors">
               Create one
             </Link>
           </p>

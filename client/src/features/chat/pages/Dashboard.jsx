@@ -24,6 +24,11 @@ import TypingIndicator from "../../../features/auth/components/TypingIndicator";
 // ✅ Import logoutUser from auth api
 import { logoutUser } from "../../auth/services/auth.api";
 
+// All hooks, socket wiring, redux actions, and handlers below are unchanged
+// from the original — only the JSX/classes were restyled to match the rest
+// of Unravel: ink navy board, one amber accent, thin borders, no blue-glow
+// glass panels, serif display type for the greeting.
+
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { chatId: urlChatId } = useParams();
@@ -75,20 +80,18 @@ const Dashboard = () => {
     title ? title.replace(/\*\*/g, "") : "Untitled Chat";
 
   // ✅ Fixed — initializeSocketConnection called directly, not via chat hook
-  // ✅ Sirf ye wala block update karo
-useEffect(() => {
-  initializeSocketConnection();
-  chat.handleGetChats(); // Sidebar list mangwane ke liye
-  
-  socket.on("chat-chunk", (data) => {
-    dispatch(updateStreamingMessage(data));
-  });
+  useEffect(() => {
+    initializeSocketConnection();
+    chat.handleGetChats(); // Sidebar list mangwane ke liye
 
-  return () => {
-    socket.off("chat-chunk");
-  };
-}, []); // 👈 Isse empty rakho
+    socket.on("chat-chunk", (data) => {
+      dispatch(updateStreamingMessage(data));
+    });
 
+    return () => {
+      socket.off("chat-chunk");
+    };
+  }, []); // 👈 Isse empty rakho
 
   useEffect(() => {
     if (isComposingNewChat || urlChatId || currentChatId) {
@@ -98,33 +101,26 @@ useEffect(() => {
     }
   }, [urlChatId, currentChatId, isLoading, isComposingNewChat]);
 
-  // ✅ Ye wala update karo
-useEffect(() => {
-  const syncChatOnReload = async () => {
-    if (urlChatId) {
-      // 1. Redux ko batao ki current chat ye hai
-      dispatch(setCurrentChatId(urlChatId));
-      
-      // 2. Backend se messages mangwao (Reload par data yahi wapas layega)
-      await chat.handleOpenChat(urlChatId);
-      
-      // 3. UI ko active chat mode mein dalo
-      setActiveChat(true);
-    }
-  };
+  useEffect(() => {
+    const syncChatOnReload = async () => {
+      if (urlChatId) {
+        dispatch(setCurrentChatId(urlChatId));
+        await chat.handleOpenChat(urlChatId);
+        setActiveChat(true);
+      }
+    };
 
-  syncChatOnReload();
-}, [urlChatId, dispatch]);
+    syncChatOnReload();
+  }, [urlChatId, dispatch]);
 
   const handleNewChat = useCallback(() => {
     navigate("/");
-    setActiveChat(false); // 👈 Change this to false
+    setActiveChat(false);
     setIsComposingNewChat(true);
     dispatch(setCurrentChatId(null));
   }, [navigate, dispatch]);
 
   const handleSend = useCallback(async () => {
-    // ✅ Fixed — call directly, not via chat hook
     if (!socket.connected) initializeSocketConnection();
     if (!input.trim()) return;
 
@@ -153,14 +149,8 @@ useEffect(() => {
     }
   }, [input, urlChatId, currentChatId, chat, navigate, dispatch]);
 
-  // ✅ Isse data tab bhi dikhega jab chats object load ho raha ho
-// Dashboard.jsx mein line 115 ke paas replace karo
-console.log("1. URL ID:", urlChatId);
-console.log("2. Redux Chats Keys:", Object.keys(chats));
-console.log("3. Redux Current Chat Data:", chats[urlChatId]);
-
-const currentMessages = (urlChatId && chats[urlChatId]) 
-    ? chats[urlChatId].messages 
+  const currentMessages = (urlChatId && chats[urlChatId])
+    ? chats[urlChatId].messages
     : [];
 
   useEffect(() => {
@@ -172,12 +162,18 @@ const currentMessages = (urlChatId && chats[urlChatId])
   }, [currentMessages]);
 
   return (
-    <div className="flex h-screen bg-[#0f172a] text-white overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#0B0E14] text-[#EDEAE2] overflow-hidden">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;1,600&family=Inter:wght@400;500;600&display=swap');
+        .unravel-display { font-family: 'Fraunces', Georgia, serif; }
+        .unravel-body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+        .unravel-mono { font-family: ui-monospace, 'IBM Plex Mono', Menlo, Consolas, monospace; }
+      `}</style>
 
       {/* 📱 Mobile Hamburger Button */}
       <button
         onClick={() => setIsSidebarOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-40 p-2 bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-xl text-white"
+        className="md:hidden fixed top-4 left-4 z-40 p-2 bg-[#0F1219] border border-white/10 text-[#EDEAE2]"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -203,20 +199,18 @@ const currentMessages = (urlChatId && chats[urlChatId])
         setInput={setInput}
       />
 
-      <div className="flex-1 flex flex-col bg-[#0f172a] relative">
+      <div className="flex-1 flex flex-col bg-[#0B0E14] relative">
         {!(activeChat || isComposingNewChat) ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex-1 flex flex-col items-center justify-center px-4 relative overflow-hidden"
           >
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-blue-600/10 blur-[120px] rounded-full pointer-events-none" />
-
             <div className="max-w-3xl w-full text-center z-10">
               <motion.h1
-                initial={{ y: 20, opacity: 0 }}
+                initial={{ y: 16, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                className="text-6xl font-black mb-4 bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-transparent tracking-tight"
+                className="unravel-display italic text-5xl md:text-6xl font-medium mb-3 text-[#EDEAE2] tracking-tight"
               >
                 Hello, {user?.username?.split(" ")[0] || "User"}.
               </motion.h1>
@@ -224,13 +218,13 @@ const currentMessages = (urlChatId && chats[urlChatId])
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-xl text-gray-400 font-medium mb-12"
+                transition={{ delay: 0.15 }}
+                className="unravel-body text-lg text-[#8B8F98] mb-12"
               >
                 Where knowledge begins.
               </motion.p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-18 text-left">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
                 {[
                   { title: "Understand an algorithm", desc: "Explain it to me like I'm five.", icon: "💡" },
                   { title: "Refactor my code", desc: "Clean up my MERN stack logic.", icon: "⚡" },
@@ -241,30 +235,28 @@ const currentMessages = (urlChatId && chats[urlChatId])
                   return (
                     <motion.div
                       key={i}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 14 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.1 }}
+                      transition={{ delay: i * 0.08 }}
                       onClick={() => {
                         setInput(item.title);
                         document.querySelector("input")?.focus();
                       }}
-                      className={`p-5 rounded-2xl cursor-pointer transition-all duration-300 group border-2 ${
+                      className={`p-5 cursor-pointer transition-colors group border ${
                         isSelected
-                          ? "bg-blue-600/20 border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.2)]"
-                          : "bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"
+                          ? "bg-[#E8A33D]/10 border-[#E8A33D]/50"
+                          : "bg-[#0F1219] border-white/10 hover:border-white/25"
                       }`}
                     >
-                      <div className={`text-2xl mb-2 transition-transform duration-300 ${isSelected ? "scale-110" : "group-hover:scale-110"}`}>
-                        {item.icon}
-                      </div>
-                      <h3 className={`text-sm font-bold transition-colors ${isSelected ? "text-blue-400" : "text-white group-hover:text-blue-400"}`}>
+                      <div className="text-xl mb-2">{item.icon}</div>
+                      <h3 className={`unravel-body text-sm font-semibold transition-colors ${isSelected ? "text-[#E8A33D]" : "text-[#EDEAE2] group-hover:text-[#E8A33D]"}`}>
                         {item.title}
                       </h3>
-                      <p className="text-xs text-gray-400 mt-1">{item.desc}</p>
+                      <p className="unravel-body text-xs text-[#8B8F98] mt-1">{item.desc}</p>
                       {isSelected && (
                         <motion.div
                           layoutId="activeDot"
-                          className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2"
+                          className="w-1.5 h-1.5 bg-[#E8A33D] mt-2"
                         />
                       )}
                     </motion.div>
@@ -275,38 +267,38 @@ const currentMessages = (urlChatId && chats[urlChatId])
               <motion.button
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.4 }}
                 onClick={handleNewChat}
-                className="mt-12 text-gray-500 hover:text-white text-sm font-medium transition-colors border-b border-transparent hover:border-white"
+                className="unravel-mono mt-10 text-[#8B8F98] hover:text-[#EDEAE2] text-xs tracking-[0.1em] transition-colors border-b border-transparent hover:border-white/30"
               >
-                Or just start a new thread →
+                OR JUST START A NEW THREAD →
               </motion.button>
             </div>
           </motion.div>
         ) : (
           <>
             <div className="flex-1 overflow-y-auto px-6 py-12 custom-scrollbar relative">
-              <div className="max-w-4xl mx-auto space-y-12">
+              <div className="max-w-4xl mx-auto space-y-10">
                 <AnimatePresence mode="popLayout">
                   {currentMessages.map((msg, index) => (
                     <motion.div
                       key={index}
-                      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={{ duration: 0.3, ease: "easeOut" }}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.25, ease: "easeOut" }}
                       className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}
                     >
-                      <div className="flex items-center gap-2 mb-2 px-2 opacity-30 uppercase tracking-[0.2em] text-[9px] font-black">
+                      <div className="unravel-mono flex items-center gap-2 mb-2 px-1 text-[#5B5F68] uppercase tracking-[0.15em] text-[9px]">
                         {msg.role === "user" ? "You" : "Assistant"}
                       </div>
                       <div
-                        className={`max-w-[88%] px-7 py-5 rounded-[2rem] shadow-sm ${
+                        className={`max-w-[88%] px-6 py-4 ${
                           msg.role === "user"
-                            ? "bg-blue-600 text-white rounded-br-none shadow-lg shadow-blue-900/20"
-                            : "bg-[#1e293b]/50 border border-white/5 text-gray-200 rounded-bl-none backdrop-blur-xl"
+                            ? "bg-[#E8A33D] text-[#0B0E14]"
+                            : "bg-[#0F1219] border border-white/10 text-[#EDEAE2]"
                         }`}
                       >
-                        <div className="prose prose-invert max-w-none text-[15.5px] font-medium leading-relaxed">
+                        <div className="unravel-body prose prose-invert max-w-none text-[15px] leading-relaxed">
                           <ReactMarkdown>{msg.content}</ReactMarkdown>
                         </div>
                       </div>
@@ -317,9 +309,9 @@ const currentMessages = (urlChatId && chats[urlChatId])
                 <AnimatePresence>
                   {isLoading && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
+                      exit={{ opacity: 0, y: -8 }}
                     >
                       <TypingIndicator />
                     </motion.div>
@@ -331,7 +323,7 @@ const currentMessages = (urlChatId && chats[urlChatId])
 
               <button
                 onClick={() => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })}
-                className="sticky bottom-4 float-right mr-4 p-2.5 bg-[#1e293b]/90 border border-white/10 rounded-full hover:bg-blue-600 text-cyan-400 hover:text-white transition-all shadow-2xl z-50"
+                className="sticky bottom-4 float-right mr-4 p-2.5 bg-[#0F1219] border border-white/10 hover:border-[#E8A33D]/50 text-[#8B8F98] hover:text-[#E8A33D] transition-colors z-50"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                   <polyline points="6 9 12 15 18 9"></polyline>
@@ -340,23 +332,23 @@ const currentMessages = (urlChatId && chats[urlChatId])
             </div>
 
             <motion.div
-              initial={{ y: 50, opacity: 0 }}
+              initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="w-full max-w-4xl mx-auto p-8 sticky bottom-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a] to-transparent"
+              className="w-full max-w-4xl mx-auto p-8 sticky bottom-0 bg-gradient-to-t from-[#0B0E14] via-[#0B0E14] to-transparent"
             >
-              <div className="relative flex items-center bg-[#1e293b]/70 border border-white/10 rounded-3xl p-3 focus-within:border-blue-500/40 shadow-2xl backdrop-blur-2xl">
+              <div className="relative flex items-center bg-[#0F1219] border border-white/10 p-3 focus-within:border-[#E8A33D]/50 transition-colors">
                 <input
                   type="text"
                   placeholder="Ask anything..."
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
-                  className="flex-1 px-5 py-3 bg-transparent outline-none text-white text-[16px]"
+                  className="unravel-body flex-1 px-4 py-3 bg-transparent outline-none text-[#EDEAE2] text-[16px] placeholder-[#5B5F68]"
                 />
                 <button
                   onClick={handleSend}
                   disabled={!input.trim()}
-                  className={`p-3.5 rounded-2xl transition-all ${input.trim() ? "bg-blue-600 text-white" : "text-gray-600"}`}
+                  className={`p-3 transition-colors ${input.trim() ? "bg-[#E8A33D] text-[#0B0E14]" : "text-[#5B5F68]"}`}
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                     <line x1="22" y1="2" x2="11" y2="13"></line>
